@@ -93,9 +93,10 @@ def boats_put_patch_delete(id):
 
         query = client.query(kind=constants.loads)
         results = list(query.fetch())
+        modified_time = get_datetime()
         for e in results:
             if e['carrier']['id'] == id:
-                e.update({"carrier": None})
+                e.update({"carrier": None, 'modified': modified_time})
                 client.put(e)
         client.delete(key=boat_key)
         return ('', 204)
@@ -233,25 +234,3 @@ def add_delete_load(bid, lid):
         return res
 
 
-@bp.route('/<id>/loads', methods=['GET'])
-# get all loads for a given boat
-def get_all_loads(id):
-    if request.method == 'GET':
-        boat_key = client.key(constants.boats, int(id))
-        boat = client.get(key=boat_key)
-        if not boat:
-            return ({'Error': "No boat with this boat_id exists"}, 404)
-
-        if 'loads' in boat.keys():
-            modifiedLoads = boat['loads']
-            if len(boat['loads']) != 0:
-                for i in modifiedLoads:
-                    i['self'] = request.root_url + 'loads/' + i['id']
-
-        returnJson = json.dumps(
-            {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'],
-             'length': boat['length'], 'loads': modifiedLoads, 'self': request.url+'/' + id})
-
-        return (returnJson, 200)
-    else:
-        return 'Method not recogonized'

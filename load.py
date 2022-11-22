@@ -91,11 +91,14 @@ def loads_put_delete(id):
 
         query = client.query(kind=constants.boats)  
         results = list(query.fetch())
+        modified_time = get_datetime()
+        ifModified = False
         for e in results:
             if 'loads' in e.keys():
                 for i in e['loads']:
                     if i['id'] == id:
                         e['loads'].remove(i)
+                        e['modified'] = modified_time
                         client.put(e)
         client.delete(key=load_key)
         return ('', 204)
