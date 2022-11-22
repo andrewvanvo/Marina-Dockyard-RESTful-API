@@ -13,7 +13,10 @@ bp = Blueprint('boat', __name__, url_prefix='/boats')
 @bp.route('', methods=['GET','POST'])
 def boats():
     if request.method == 'POST':
-        
+        # if request content type is not application/json
+        if request.content_type != "application/json":
+            res = req_incorrect_content()
+            return res
         # unacceptable mime type
         if 'application/json' not in request.accept_mimetypes:
             res = req_unacceptable_mime_type()
@@ -84,12 +87,62 @@ def boats_put_patch_delete(id):
         query = client.query(kind=constants.loads)
         results = list(query.fetch())
         for e in results:
-            # e["id"] = e.key.id
             if e['carrier']['id'] == id:
                 e.update({"carrier": None})
                 client.put(e)
         client.delete(key=boat_key)
         return ('', 204)
+
+    elif request.method == 'PATCH':
+        # if request content type is not application/json
+        if request.content_type != "application/json":
+            res = req_incorrect_content()
+            return res
+        # unacceptable mime type
+        if 'application/json' not in request.accept_mimetypes:
+            res = req_unacceptable_mime_type()
+            return res
+
+        boat_key = client.key(constants.boats, int(id))
+        boat = client.get(key=boat_key)
+        content = request.get_json()
+        
+        # update only keys present
+        for key in content:
+            boat.update({f'{key}': content[key]})
+        modified_time = get_datetime()
+        boat.update({'modified': modified_time})
+        client.put(boat)
+
+        # response content must be application/json with modified object
+        res = boat_patched(boat)
+        return res
+    
+    elif request.method == 'PUT':
+        # if request content type is not application/json
+        if request.content_type != "application/json":
+            res = req_incorrect_content()
+            return res
+        # unacceptable mime type
+        if 'application/json' not in request.accept_mimetypes:
+            res = req_unacceptable_mime_type()
+            return res
+
+        boat_key = client.key(constants.boats, int(id))
+        boat = client.get(key=boat_key)
+        content = request.get_json()
+        
+        # update only keys present
+        for key in content:
+            boat.update({f'{key}': content[key]})
+        modified_time = get_datetime()
+        boat.update({'modified': modified_time})
+        client.put(boat)
+
+        # response content must be application/json with modified object
+        res = boat_patched(boat)
+        return res
+
 
     # get specific boat with id
     #elif request.method == 'GET':

@@ -18,23 +18,22 @@ def boat_created(boat):
     res.status_code = 201
     return res
 
-#boat object return
-def app_json_boat(boat):
+#boat patched return
+def boat_patched(boat):
     responseContent = json.dumps(
-        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'modified': boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 200
     return res
 
-# app/json boat return for PUT 303
-def app_json_boat_put(boat):
-    responseContent = json.dumps(
-        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'], 'self': request.url})
+# incorrect req content type
+def req_incorrect_content():
+    responseContent = json.dumps({
+        "Error": "The request object has the incorrect content type"})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
-    res.location = request.url
-    res.status_code = 303
+    res.status_code = 400
     return res
 
 # unacceptable MIME type 406 
