@@ -60,7 +60,6 @@ def load_patched(load):
     res.status_code = 200
     return res
 
-
 # incorrect req content type
 def req_incorrect_content():
     responseContent = json.dumps({
@@ -92,6 +91,15 @@ def method_not_permitted():
 def forbidden_content():
     responseContent = json.dumps({
         "Error": "The request object has requested forbidden content"})
+    res = make_response(responseContent)
+    res.mimetype = 'application/json'
+    res.status_code = 403
+    return res
+
+# load already loaded
+def already_loaded():
+    responseContent = json.dumps({
+        "Error": "The load is already loaded on another boat"})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 403

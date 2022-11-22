@@ -126,6 +126,7 @@ def loads_put_delete(id):
         res.status_code = 200
         return res
 
+    #patch specific load id
     elif request.method == 'PATCH':
         # if request content type is not application/json
         if request.content_type != "application/json":
@@ -151,6 +152,7 @@ def loads_put_delete(id):
         res = load_patched(load)
         return res
     
+    #put specific load id
     elif request.method == 'PUT':
         # if request content type is not application/json
         if request.content_type != "application/json":

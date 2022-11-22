@@ -172,7 +172,7 @@ def boats_put_patch_delete(id):
         return res
 
 
-#LOADS FUNCTIONALITY
+#Boat/Loads functionality
 @bp.route('/<bid>/loads/<lid>', methods=['PUT', 'DELETE'])
 def add_delete_load(bid, lid):
     # assign load to boat
@@ -186,17 +186,22 @@ def add_delete_load(bid, lid):
         if not load:
             return ({'Error': "The specified boat and/or load does not exist"}, 404)
         if load['carrier'] is not None:
-            return ({'Error': "The load is already loaded on another boat"}, 403)
+            res = already_loaded()
+            return res
+
         if 'loads' in boat.keys():
             boat['loads'].append(
                 {'id': str(load.id)})
         else:
             boat['loads'] = [
                 {'id': str(load.id)}]
-        load.update({'carrier': {'id': bid}})
+        modified_time = get_datetime()
+        load.update({'carrier': {'id': bid}, 'modified': modified_time})
+        boat.update({'modified': modified_time})
         client.put(load)
         client.put(boat)
         return('', 204)
+
     # remove load from boat
     if request.method == 'DELETE':
         boat_key = client.key(constants.boats, int(bid))
@@ -209,7 +214,6 @@ def add_delete_load(bid, lid):
             return ({'Error': "No boat with this boat_id is loaded with the load with this load_id"}, 404)
 
         if 'loads' in boat.keys():
-            # boat['loads'].remove(int(lid))
             initialLen = len(boat['loads'])
             for i in range(len(boat['loads'])):
                 if boat['loads'][i]['id'] == lid:
@@ -217,14 +221,16 @@ def add_delete_load(bid, lid):
             afterLen = len(boat['loads'])
             if initialLen == afterLen:
                 return ({'Error': "No boat with this boat_id is loaded with the load with this load_id"}, 404)
-
+        modified_time = get_datetime()
         if 'carrier' in load.keys():
-            load.update({'carrier': None})
+            load.update({'carrier': None, 'modified': modified_time})
+        boat.update({'modified':modified_time})    
         client.put(load)
         client.put(boat)
         return('', 204)
     else:
-        return 'Method not recogonized'
+        res = method_not_permitted()
+        return res
 
 
 @bp.route('/<id>/loads', methods=['GET'])
