@@ -12,6 +12,7 @@ bp = Blueprint('boat', __name__, url_prefix='/boats')
 
 @bp.route('', methods=['GET','POST'])
 def boats():
+    #Create a boat
     if request.method == 'POST':
         # if request content type is not application/json
         if request.content_type != "application/json":
@@ -27,7 +28,7 @@ def boats():
         new_boat = datastore.entity.Entity(
             key=client.key(constants.boats))
         new_boat.update({'name': content['name'],
-                         'type': content['type'], 'length': content['length'], 'loads': [], 'created': creation_time})
+                         'type': content['type'], 'length': content['length'], 'loads': [], 'created': creation_time, 'modified': None})
         client.put(new_boat)
 
         boat_key = client.key(constants.boats, int(new_boat.key.id))
@@ -35,6 +36,7 @@ def boats():
         res = boat_created(boat)
         return res
 
+    #get all auth boats
     elif request.method == 'GET':
         # unacceptable mime type
         if 'application/json' not in request.accept_mimetypes:
@@ -75,7 +77,7 @@ def boats():
         return res
 
 
-@bp.route('/<id>', methods=['PUT','PATCH', 'DELETE'])
+@bp.route('/<id>', methods=['GET','PUT','PATCH', 'DELETE'])
 def boats_put_patch_delete(id):
     # delete specific boat and unload
     if request.method == 'DELETE':
@@ -83,6 +85,11 @@ def boats_put_patch_delete(id):
         boat = client.get(key=boat_key)
         if not boat:
             return({"Error": "No boat with this boat_id exists"}, 404)
+
+        # no loads on any boats to delete on kind:boats
+        if len(boat['loads']) == 0:
+            client.delete(key=boat_key)
+            return ('', 204)
 
         query = client.query(kind=constants.loads)
         results = list(query.fetch())
@@ -93,6 +100,7 @@ def boats_put_patch_delete(id):
         client.delete(key=boat_key)
         return ('', 204)
 
+    #patch a specific boat
     elif request.method == 'PATCH':
         # if request content type is not application/json
         if request.content_type != "application/json":
@@ -118,6 +126,7 @@ def boats_put_patch_delete(id):
         res = boat_patched(boat)
         return res
     
+    #put a specific boat
     elif request.method == 'PUT':
         # if request content type is not application/json
         if request.content_type != "application/json":
@@ -143,8 +152,7 @@ def boats_put_patch_delete(id):
         res = boat_patched(boat)
         return res
 
-
-    # get specific boat with id
+    #get specific boat with id to see loads
     #elif request.method == 'GET':
     #    boat_key = client.key(constants.boats, int(id))
     #    boat = client.get(key=boat_key)
@@ -156,16 +164,15 @@ def boats_put_patch_delete(id):
     #        loadDisplay = boat['loads']
     #        loadID = loadDisplay[0]['id']
     #        loadDisplay[0]['self'] = request.root_url+'loads/' + loadID
-    #    returnJson = json.dumps(
-    #        {"id": id, 'name': boat['name'], 'type': boat['type'],
-    #         'length': boat['length'], 'loads': loadDisplay, 'self': request.url}
-    #    )
-    #    return (returnJson, 200)
+    #    
+    #    res = boat_return(boat, loadDisplay)
+
     else:
         res = method_not_permitted()
         return res
 
 
+#LOADS FUNCTIONALITY
 @bp.route('/<bid>/loads/<lid>', methods=['PUT', 'DELETE'])
 def add_delete_load(bid, lid):
     # assign load to boat
@@ -190,8 +197,7 @@ def add_delete_load(bid, lid):
         client.put(load)
         client.put(boat)
         return('', 204)
-    # delete load from boat
-
+    # remove load from boat
     if request.method == 'DELETE':
         boat_key = client.key(constants.boats, int(bid))
         boat = client.get(key=boat_key)

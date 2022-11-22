@@ -9,10 +9,11 @@ def get_datetime():
     return curTime
 
 
-# boat created json return
+# boat created return
 def boat_created(boat):
     responseContent = json.dumps(
-        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
+        'modified':boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 201
@@ -21,11 +22,44 @@ def boat_created(boat):
 #boat patched return
 def boat_patched(boat):
     responseContent = json.dumps(
-        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'modified': boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
+        'modified': boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 200
     return res
+
+#boat load return
+def boat_return(boat, load):
+    responseContent = json.dumps(
+        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
+        'modified': boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+    
+    res = make_response(responseContent)
+    res.mimetype = 'application/json'
+    res.status_code = 200
+    return res
+
+# load created return
+def load_created(load):
+    responseContent = json.dumps(
+        {"id": load.key.id, "volume": load["volume"], 'item': load['item'], 'created': load['created'],
+        'modified': load['modified'], 'carrier': load['carrier'], 'self': request.url+'/'+str(load.key.id)})
+    res = make_response(responseContent)
+    res.mimetype = 'application/json'
+    res.status_code = 201
+    return res
+
+#load patched return
+def load_patched(load):
+    responseContent = json.dumps(
+        {"id": load.key.id, "volume": load["volume"], 'item': load['item'], 'created': load['created'],
+        'modified': load['modified'], 'carrier': load['carrier'], 'self': request.url+'/'+str(load.key.id)})
+    res = make_response(responseContent)
+    res.mimetype = 'application/json'
+    res.status_code = 200
+    return res
+
 
 # incorrect req content type
 def req_incorrect_content():
