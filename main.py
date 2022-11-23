@@ -167,24 +167,26 @@ def verify_jwt(request):
 def index():
     return render_template('index.html')
 
+#Postman testing
 @app.route('/decode', methods=['GET'])
 def decode_jwt():
     payload = verify_jwt(request)
     return payload          
 
+#ROUTES
 @app.route('/login', methods=['GET'])
 def login():    
     if request.method == 'GET':       
             #Auth0
             return oauth.auth0.authorize_redirect(
-                redirect_uri='https://voandre-hw7.uc.r.appspot.com/callback'
+                redirect_uri='http://127.0.0.1:8080/callback'
             )
 @app.route("/callback", methods=["GET", "POST"])
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
 
-    return redirect('https://voandre-hw7.uc.r.appspot.com/userinfo')
+    return redirect('http://127.0.0.1:8080/userinfo')
 
 @app.route('/userinfo', methods = ['GET'])
 def userinfo():
