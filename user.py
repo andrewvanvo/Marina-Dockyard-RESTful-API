@@ -21,4 +21,17 @@ bp = Blueprint('user', __name__, url_prefix='/users')
 
 @bp.route('', methods=['GET','POST','PUT', 'PATCH', 'DELETE'])
 def users():  
-    pass
+    if request.method == 'GET':
+        # unacceptable mime type
+        if 'application/json' not in request.accept_mimetypes:
+            res = req_unacceptable_mime_type()
+            return res
+        query = client.query(kind=constants.users)
+        results = list(query.fetch())
+        userArray = []
+        for e in results:
+            userArray.append(e)
+        res = user_return(userArray)
+        return res
+
+        

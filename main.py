@@ -196,7 +196,8 @@ def login():
     if request.method == 'GET':       
             #Auth0
             return oauth.auth0.authorize_redirect(
-                redirect_uri='https://portfolioproj-369315.uc.r.appspot.com/userinfo'
+                #redirect_uri='https://portfolioproj-369315.uc.r.appspot.com/userinfo'
+                redirect_uri='http://127.0.0.1:8080/userinfo'
             )
 
 @app.route('/userinfo', methods = ['GET'])
@@ -204,9 +205,9 @@ def userinfo():
     token = oauth.auth0.authorize_access_token()
     payload = verify_jwt_user_created(token['id_token'])
 
-    #new_user = datastore.entity.Entity(key=client.key(constants.users))
-    #new_user.update({'sub': content['name']})
-    #client.put(new_user)
+    new_user = datastore.entity.Entity(key=client.key(constants.users))
+    new_user.update({'sub': payload['sub']})
+    client.put(new_user)
 
     return render_template('userinfo.html',jwtToken = token['id_token'], userSub = payload['sub'])
 

@@ -8,6 +8,17 @@ def get_datetime():
     curTime = str(datetime.datetime.now())
     return curTime
 
+#user return
+def user_return(userArray):
+    responseContent = []
+    for user in userArray:
+        entry = {"User Database ID": user.key.id, 'User Sub':user['sub']}
+        responseContent.append(entry)
+    converted = json.dumps(responseContent)
+    res = make_response(converted)
+    res.mimetype = 'application/json'
+    res.status_code = 200
+    return res
 
 # boat created return
 def boat_created(boat):
