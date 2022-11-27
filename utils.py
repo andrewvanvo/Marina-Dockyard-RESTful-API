@@ -116,3 +116,11 @@ def already_loaded():
     res.status_code = 403
     return res
 
+
+
+###########################
+#Auth0
+###########################
+
+def Auth0_initiate(app):
+    pass

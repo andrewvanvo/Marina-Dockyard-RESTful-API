@@ -15,7 +15,6 @@ from werkzeug.exceptions import HTTPException
 #from dotenv import load_dotenv, find_dotenv
 
 app = Flask(__name__)
-app.secret_key = 'SECRET_KEY'
 client = datastore.Client()
 
 app.register_blueprint(boat.bp)
@@ -23,6 +22,7 @@ app.register_blueprint(load.bp)
 app.register_blueprint(user.bp)
 
 # Update the values of the following 3 variables
+app.secret_key = 'SECRET_KEY'
 CLIENT_ID = 'pcEV9ftHGsGVOcqjwzSWrUIctFhhJ45w'
 CLIENT_SECRET = '7WERr0QDEXhu3dTXGxtzztu0-HQi5_mC8uP-1Xu5-vL4gAAtMWMTOS6hC4sRYbSJ'
 DOMAIN = 'andrew-vo-portfolio.us.auth0.com'

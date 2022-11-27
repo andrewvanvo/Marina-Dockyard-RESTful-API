@@ -35,6 +35,8 @@ def boats():
 
         
 
+        
+
         content = request.get_json()
         creation_time = get_datetime()
         new_boat = datastore.entity.Entity(
