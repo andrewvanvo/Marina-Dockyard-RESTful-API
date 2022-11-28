@@ -413,14 +413,9 @@ def boats_put_patch_delete(id):
 
         if not boat:
             return ({"Error": "No boat with this boat_id exists"}, 404)
-        if len(boat['loads']) == 0:
-            loadDisplay = []
-        else:
-            loadDisplay = boat['loads']
-            loadID = loadDisplay[0]['id']
-            loadDisplay[0]['self'] = request.root_url+'loads/' + loadID
-        
-        res = boat_return(boat, loadDisplay)
+
+        res = boat_return(boat)
+        return res
 
     else:
         res = method_not_permitted()

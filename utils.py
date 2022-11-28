@@ -41,11 +41,22 @@ def boat_patched(boat):
     return res
 
 #boat load return
-def boat_return(boat, load):
-    responseContent = json.dumps(
-        {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
-        'modified': boat['modified'],'loads': boat['loads'] ,'owner': boat['owner'],'self': request.url+'/'+str(boat.key.id)})
+def boat_return(boat):
+    if len(boat['loads']) == 0:
+            loadDisplay = []
+    else:
+        loadList = boat['loads']
+        loadDisplay = []
+        for load in loadList:
+            info = {}
+            info['id'] = load['id']
+            info['self'] = request.root_url+'loads/' + info['id']
+            loadDisplay.append(info)
     
+    responseContent = json.dumps(
+    {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
+    'modified': boat['modified'],'loads': loadDisplay ,'owner': boat['owner'],'self': request.url})
+
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 200
