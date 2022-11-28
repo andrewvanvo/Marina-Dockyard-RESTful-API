@@ -24,7 +24,7 @@ def user_return(userArray):
 def boat_created(boat):
     responseContent = json.dumps(
         {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
-        'modified':boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+        'modified':boat['modified'],'loads': boat['loads'] , 'owner': boat['owner'],'self': request.url+'/'+str(boat.key.id)})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 201
@@ -34,7 +34,7 @@ def boat_created(boat):
 def boat_patched(boat):
     responseContent = json.dumps(
         {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
-        'modified': boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+        'modified': boat['modified'],'loads': boat['loads'] ,'owner': boat['owner'],'self': request.url+'/'+str(boat.key.id)})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 200
@@ -44,7 +44,7 @@ def boat_patched(boat):
 def boat_return(boat, load):
     responseContent = json.dumps(
         {"id": boat.key.id, 'name': boat['name'], 'type': boat['type'], 'length': boat['length'],'created': boat['created'],
-        'modified': boat['modified'],'loads': boat['loads'] ,'self': request.url+'/'+str(boat.key.id)})
+        'modified': boat['modified'],'loads': boat['loads'] ,'owner': boat['owner'],'self': request.url+'/'+str(boat.key.id)})
     
     res = make_response(responseContent)
     res.mimetype = 'application/json'
@@ -65,7 +65,7 @@ def load_created(load):
 def load_patched(load):
     responseContent = json.dumps(
         {"id": load.key.id, "volume": load["volume"], 'item': load['item'], 'created': load['created'],
-        'modified': load['modified'], 'carrier': load['carrier'], 'self': request.url+'/'+str(load.key.id)})
+        'modified': load['modified'], 'carrier': load['carrier'], 'self': request.url})
     res = make_response(responseContent)
     res.mimetype = 'application/json'
     res.status_code = 200
@@ -117,10 +117,3 @@ def already_loaded():
     return res
 
 
-
-###########################
-#Auth0
-###########################
-
-def Auth0_initiate(app):
-    pass
