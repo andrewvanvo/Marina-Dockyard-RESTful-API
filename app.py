@@ -223,11 +223,12 @@ def users():
             res = req_unacceptable_mime_type()
             return res
         query = client.query(kind=constants.users)
+        count = len(list(query.fetch()))
         results = list(query.fetch())
         userArray = []
         for e in results:
             userArray.append(e)
-        res = user_return(userArray)
+        res = user_return(userArray, count)
         return res
     elif request.method not in allowed:
         res = method_not_permitted()
@@ -279,7 +280,8 @@ def boats():
         payload = verify_jwt(request)
 
         query = client.query(kind=constants.boats)
-
+        query.add_filter('owner','=', payload['sub'])
+        count = len(list(query.fetch()))
 
         if not request.args:
             q_limit = 5
@@ -305,7 +307,7 @@ def boats():
                     i['self'] = request.root_url + 'loads/' + i['id']
                 e['self'] = request.root_url + 'boats/' + str(e['id'])
                 boatArray.append(e)
-        output = {"boats": boatArray}
+        output = {"boats": boatArray, "count": count}
     
         if next_url:
             output["next"] = next_url
@@ -568,6 +570,8 @@ def loads():
             return res
 
         query = client.query(kind=constants.loads)
+        count = len(list(query.fetch()))
+
         if not request.args:
             q_limit = 5
             q_offset = 0
@@ -588,7 +592,8 @@ def loads():
             e["id"] = e.key.id
             e['self'] = request.root_url + 'loads/' + str(e['id'])
 
-        output = {"loads": results}
+        output = {"loads": results, "count": count}
+
         if next_url:
             output["next"] = next_url
 

@@ -9,11 +9,12 @@ def get_datetime():
     return curTime
 
 #user return
-def user_return(userArray):
+def user_return(userArray, count):
     responseContent = []
     for user in userArray:
         entry = {"User Database ID": user.key.id, 'User Sub':user['sub']}
         responseContent.append(entry)
+    responseContent.append({"Count": count})
     converted = json.dumps(responseContent)
     res = make_response(converted)
     res.mimetype = 'application/json'
