@@ -269,6 +269,7 @@ def boats():
         payload = verify_jwt(request)
 
         query = client.query(kind=constants.boats)
+        
 
         if not request.args:
             q_limit = 5
