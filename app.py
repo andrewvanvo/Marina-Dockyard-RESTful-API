@@ -420,6 +420,11 @@ def boats_put_patch_delete(id):
 
     #get specific boat with id to see loads
     elif request.method == 'GET':
+        # unacceptable mime type
+        if 'application/json' not in request.accept_mimetypes:
+            res = req_unacceptable_mime_type()
+            return res
+
         boat_key = client.key(constants.boats, int(id))
         boat = client.get(key=boat_key)
         if not boat:
@@ -446,6 +451,16 @@ def add_delete_load(bid, lid):
 
     # assign load to boat
     if request.method == 'PUT':
+
+        # if request content type is not application/json
+        if request.content_type != "application/json":
+            res = req_incorrect_content()
+            return res
+        # unacceptable mime type
+        if 'application/json' not in request.accept_mimetypes:
+            res = req_unacceptable_mime_type()
+            return res
+
         boat_key = client.key(constants.boats, int(bid))
         boat = client.get(key=boat_key)
 
@@ -593,7 +608,7 @@ def loads():
 def loads_put_delete(id):
 
     allowed =["DELETE", "GET", "PUT", "PATCH"]
-    
+
     # delete load and remove from boat
     if request.method == 'DELETE':
         load_key = client.key(constants.loads, int(id))
