@@ -212,8 +212,11 @@ def userinfo():
 #########################
 # USER
 #########################
-@app.route('/users', methods=['GET','POST','PUT', 'PATCH', 'DELETE'])
+@app.route('/users', methods=['GET', "POST", "PUT", "PATCH", "DELETE"])
 def users():  
+
+    allowed = ['GET']
+
     if request.method == 'GET':
         # unacceptable mime type
         if 'application/json' not in request.accept_mimetypes:
@@ -226,13 +229,20 @@ def users():
             userArray.append(e)
         res = user_return(userArray)
         return res
+    elif request.method not in allowed:
+        res = method_not_permitted()
+        return res
+
 
 #########################
 # BOAT
 #########################
 
-@app.route('/boats', methods=['GET','POST'])
+@app.route('/boats', methods=['GET', "POST", "PUT", "PATCH", "DELETE"])
 def boats():
+
+    allowed = ['GET','POST']
+
     #Create a boat
     if request.method == 'POST':
         # if request content type is not application/json
@@ -269,7 +279,7 @@ def boats():
         payload = verify_jwt(request)
 
         query = client.query(kind=constants.boats)
-        
+
 
         if not request.args:
             q_limit = 5
@@ -303,13 +313,16 @@ def boats():
         returnJson = json.dumps(output)
         return (returnJson, 200)
 
-    else:
+    elif request.method not in allowed:
         res = method_not_permitted()
         return res
 
 
-@app.route('/boats/<id>', methods=['GET','PUT','PATCH', 'DELETE'])
+@app.route('/boats/<id>', methods=['GET', "POST", "PUT", "PATCH", "DELETE"])
 def boats_put_patch_delete(id):
+
+    allowed = ['GET','PUT','PATCH', 'DELETE']
+
     # delete specific boat and unload
     if request.method == 'DELETE':
 
@@ -420,14 +433,17 @@ def boats_put_patch_delete(id):
         res = boat_return(boat)
         return res
 
-    else:
+    elif request.method not in allowed:
         res = method_not_permitted()
         return res
 
 
 #Boat/Loads functionality
-@app.route('/boats/<bid>/loads/<lid>', methods=['PUT', 'DELETE'])
+@app.route('/boats/<bid>/loads/<lid>', methods=['GET', "POST", "PUT", "PATCH", "DELETE"])
 def add_delete_load(bid, lid):
+
+    allowed = ["PUT", "DELETE"]
+
     # assign load to boat
     if request.method == 'PUT':
         boat_key = client.key(constants.boats, int(bid))
@@ -494,15 +510,19 @@ def add_delete_load(bid, lid):
         client.put(load)
         client.put(boat)
         return('', 204)
-    else:
+
+    elif request.method not in allowed:
         res = method_not_permitted()
         return res
 
 #########################
 # LOADS
 #########################
-@app.route('/loads', methods=['GET','POST'])
+@app.route('/loads', methods=['GET', "POST", "PUT", "PATCH", "DELETE"])
 def loads():
+
+    allowed = ["GET", "POST"]
+
     # create load
     if request.method == 'POST':
         # if request content type is not application/json
@@ -560,7 +580,7 @@ def loads():
         returnJson = json.dumps(output)
         return (returnJson, 200)
 
-    else:
+    elif request.method not in allowed:
         res = method_not_permitted()
         return res
 
@@ -569,9 +589,11 @@ def loads():
 # SPECIFIC LOAD
 #########################
 
-@app.route('/loads/<id>', methods=['DELETE','GET','PUT','PATCH'])
+@app.route('/loads/<id>', methods=['GET', "POST", "PUT", "PATCH", "DELETE"])
 def loads_put_delete(id):
 
+    allowed =["DELETE", "GET", "PUT", "PATCH"]
+    
     # delete load and remove from boat
     if request.method == 'DELETE':
         load_key = client.key(constants.loads, int(id))
@@ -680,7 +702,7 @@ def loads_put_delete(id):
         res = load_patched(load)
         return res
 
-    else:
+    elif request.method not in allowed:
         res = method_not_permitted()
         return res
 
