@@ -312,12 +312,10 @@ def boats_put_patch_delete(id):
     # delete specific boat and unload
     if request.method == 'DELETE':
 
-        
-
         boat_key = client.key(constants.boats, int(id))
         boat = client.get(key=boat_key)
         if not boat:
-            return({"Error": "No boat with this boat_id exists"}, 404)
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
 
         payload = verify_jwt(request)
         if boat['owner'] != payload['sub']:
@@ -352,6 +350,9 @@ def boats_put_patch_delete(id):
 
         boat_key = client.key(constants.boats, int(id))
         boat = client.get(key=boat_key)
+        if not boat:
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
+
         content = request.get_json()
 
         payload = verify_jwt(request)
@@ -383,6 +384,8 @@ def boats_put_patch_delete(id):
 
         boat_key = client.key(constants.boats, int(id))
         boat = client.get(key=boat_key)
+        if not boat:
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
         content = request.get_json()
 
         payload = verify_jwt(request)
@@ -405,14 +408,13 @@ def boats_put_patch_delete(id):
     elif request.method == 'GET':
         boat_key = client.key(constants.boats, int(id))
         boat = client.get(key=boat_key)
+        if not boat:
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
 
         payload = verify_jwt(request)
         if boat['owner'] != payload['sub']:
             res = forbidden_content()
             return res
-
-        if not boat:
-            return ({"Error": "No boat with this boat_id exists"}, 404)
 
         res = boat_return(boat)
         return res
@@ -429,12 +431,19 @@ def add_delete_load(bid, lid):
     if request.method == 'PUT':
         boat_key = client.key(constants.boats, int(bid))
         boat = client.get(key=boat_key)
+
         if not boat:
             return ({'Error': "The specified boat and/or load does not exist"}, 404)
         load_key = client.key(constants.loads, int(lid))
         load = client.get(key=load_key)
         if not load:
             return ({'Error': "The specified boat and/or load does not exist"}, 404)
+
+        payload = verify_jwt(request)
+        if boat['owner'] != payload['sub']:
+            res = forbidden_content()
+            return res
+
         if load['carrier'] is not None:
             res = already_loaded()
             return res
@@ -456,12 +465,18 @@ def add_delete_load(bid, lid):
     if request.method == 'DELETE':
         boat_key = client.key(constants.boats, int(bid))
         boat = client.get(key=boat_key)
+            
         if not boat:
-            return ({'Error': "No boat with this boat_id is loaded with the load with this load_id"}, 404)
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
         load_key = client.key(constants.loads, int(lid))
         load = client.get(key=load_key)
         if not load:
-            return ({'Error': "No boat with this boat_id is loaded with the load with this load_id"}, 404)
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
+
+        payload = verify_jwt(request)
+        if boat['owner'] != payload['sub']:
+            res = forbidden_content()
+            return res
 
         if 'loads' in boat.keys():
             initialLen = len(boat['loads'])
@@ -561,7 +576,7 @@ def loads_put_delete(id):
         load_key = client.key(constants.loads, int(id))
         load = client.get(key=load_key)
         if not load:
-            return({"Error": "No load with this load_id exists"}, 404)
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
 
         # no loads on any boats to delete on kind:boats
         if load['carrier'] is None:
@@ -592,7 +607,7 @@ def loads_put_delete(id):
         load_key = client.key(constants.loads, int(id))
         load = client.get(key=load_key)
         if not load:
-            return ({"Error": "No load with this load_id exists"}, 404)
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
         if load['carrier'] == None:
             carrierDisplay = None
         else:
@@ -621,6 +636,8 @@ def loads_put_delete(id):
 
         load_key = client.key(constants.loads, int(id))
         load = client.get(key=load_key)
+        if not load:
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
         content = request.get_json()
         
         # update only keys present
@@ -647,6 +664,8 @@ def loads_put_delete(id):
 
         load_key = client.key(constants.loads, int(id))
         load = client.get(key=load_key)
+        if not load:
+            return ({'Error': "The specified boat and/or load does not exist"}, 404)
         content = request.get_json()
         
         # update only keys present
