@@ -334,6 +334,7 @@ def boats_put_patch_delete(id):
             return ({'Error': "The specified boat and/or load does not exist"}, 404)
 
         payload = verify_jwt(request)
+
         if boat['owner'] != payload['sub']:
             res = forbidden_content()
             return res
@@ -347,7 +348,11 @@ def boats_put_patch_delete(id):
         results = list(query.fetch())
         modified_time = get_datetime()
         for e in results:
+            print(e)
+            if e['carrier'] == None:
+                continue
             if e['carrier']['id'] == id:
+                print(e['carrier']['id'])
                 e.update({"carrier": None, 'modified': modified_time})
                 client.put(e)
         client.delete(key=boat_key)
@@ -454,10 +459,6 @@ def add_delete_load(bid, lid):
     # assign load to boat
     if request.method == 'PUT':
 
-        # if request content type is not application/json
-        if request.content_type != "application/json":
-            res = req_incorrect_content()
-            return res
         # unacceptable mime type
         if 'application/json' not in request.accept_mimetypes:
             res = req_unacceptable_mime_type()
@@ -515,8 +516,10 @@ def add_delete_load(bid, lid):
         if 'loads' in boat.keys():
             initialLen = len(boat['loads'])
             for i in range(len(boat['loads'])):
+                print(boat['loads'][i]['id'])
                 if boat['loads'][i]['id'] == lid:
                     boat['loads'].remove(boat['loads'][i])
+                    break
             afterLen = len(boat['loads'])
             if initialLen == afterLen:
                 return ({'Error': "No boat with this boat_id is loaded with the load with this load_id"}, 404)
