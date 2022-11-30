@@ -348,7 +348,6 @@ def boats_put_patch_delete(id):
         results = list(query.fetch())
         modified_time = get_datetime()
         for e in results:
-            print(e)
             if e['carrier'] == None:
                 continue
             if e['carrier']['id'] == id:
