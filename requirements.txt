@@ -1,9 +1,9 @@
-google-cloud-datastore==2.1.6
+Flask==2.0.1
+google-cloud-datastore==2.9.0
 python-jose
-flask-cors
+#flask-cors #not used
 six
-Flask>=2.0.1
-python-dotenv>=0.19.2
-authlib>=1.0
-requests>=2.27.1
-protobuf==3.20.*
+#python-dotenv #not used
+#requests #not usd
+authlib
+

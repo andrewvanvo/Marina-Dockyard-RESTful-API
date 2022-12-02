@@ -7,11 +7,12 @@ from six.moves.urllib.request import urlopen
 from jose import jwt
 from authlib.integrations.flask_client import OAuth
 
-from flask_cors import cross_origin
-from os import environ as env
-from urllib.parse import quote_plus, urlencode
-from werkzeug.exceptions import HTTPException
-from dotenv import load_dotenv, find_dotenv
+#from flask_cors import cross_origin
+#from os import environ as env
+##from urllib.parse import quote_plus, urlencode
+#from werkzeug.exceptions import HTTPException
+#from dotenv import load_dotenv, find_dotenv
+#from six.moves.urllib.parse import urlencode
 
 app = Flask(__name__)
 client = datastore.Client()
