@@ -7,9 +7,9 @@ from six.moves.urllib.request import urlopen
 #from flask_cors import cross_origin
 from jose import jwt
 #from os import environ as env
-from urllib.parse import quote_plus, urlencode
+#from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
-from werkzeug.exceptions import HTTPException
+#from werkzeug.exceptions import HTTPException
 #from dotenv import load_dotenv, find_dotenv
 
 app = Flask(__name__)
@@ -186,8 +186,8 @@ def login():
     if request.method == 'GET':       
             #Auth0
             return oauth.auth0.authorize_redirect(
-                #redirect_uri='https://portfolioproj-369315.uc.r.appspot.com/userinfo'
-                redirect_uri='http://127.0.0.1:8080/userinfo'
+                redirect_uri='https://portfolioproj-369315.uc.r.appspot.com/userinfo'
+                #redirect_uri='http://127.0.0.1:8080/userinfo'
             )
 
 @app.route('/userinfo', methods = ['GET'])
