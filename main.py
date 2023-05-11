@@ -1,6 +1,7 @@
 from google.cloud import datastore
 from flask import *
 import requests
+import os
 
 from six.moves.urllib.request import urlopen
 from flask_cors import cross_origin
@@ -19,9 +20,12 @@ app = Flask(__name__)
 client = datastore.Client()
 
 # Update the values of the following 3 variables
-app.secret_key = 'SECRET_KEY'
-CLIENT_ID = 'pcEV9ftHGsGVOcqjwzSWrUIctFhhJ45w'
-CLIENT_SECRET = '7WERr0QDEXhu3dTXGxtzztu0-HQi5_mC8uP-1Xu5-vL4gAAtMWMTOS6hC4sRYbSJ'
+# app.secret_key = 'SECRET_KEY'
+# CLIENT_ID = 'pcEV9ftHGsGVOcqjwzSWrUIctFhhJ45w'
+# CLIENT_SECRET = '7WERr0QDEXhu3dTXGxtzztu0-HQi5_mC8uP-1Xu5-vL4gAAtMWMTOS6hC4sRYbSJ'
+app.secret_key = os.environ.get("SECRET_KEY")
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 DOMAIN = 'andrew-vo-portfolio.us.auth0.com'
 ALGORITHMS = ["RS256"]
 
